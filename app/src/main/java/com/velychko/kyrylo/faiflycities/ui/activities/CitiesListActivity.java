@@ -23,6 +23,7 @@ import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel
 import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.Country;
 import com.velychko.kyrylo.faiflycities.ui.fragments.ProgressDialogFragment;
 import com.velychko.kyrylo.faiflycities.utils.Constants;
+import com.velychko.kyrylo.faiflycities.utils.ItemDivider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,6 +90,7 @@ public class CitiesListActivity extends AppCompatActivity {
         tvCountOfCities = (TextView) findViewById(R.id.tv_count_of_cities);
         rvCitiesList = (RecyclerView) findViewById(R.id.rv_cities_list);
         rvCitiesList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        rvCitiesList.addItemDecoration(new ItemDivider(this));
     }
 
     private boolean isDatabaseEmpty() {
