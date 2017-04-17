@@ -3,8 +3,14 @@
 
     <!--Layout-->
     <string name="btn_choose_country">Choose country</string>
+    <string name="tv_constant_string_current_country">Current country:</string>
+    <string name="tv_constant_string_count_of_cities">Cities:</string>
 
     <!--Dialog-->
     <string name="dialog_title_loading_countries">Loading Countries and Cities</string>
+    <string name="dialog_title_choose_country">Choose country</string>
+    <string name="dialog_constant_string_count_of_cities">Cities: %1$d</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Отмена</string>
 
 </resources>

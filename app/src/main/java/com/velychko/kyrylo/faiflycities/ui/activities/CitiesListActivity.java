@@ -1,16 +1,25 @@
 package com.velychko.kyrylo.faiflycities.ui.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.velychko.kyrylo.faiflycities.R;
-import com.velychko.kyrylo.faiflycities.data.database.CitiesResponse;
+import com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription;
 import com.velychko.kyrylo.faiflycities.data.database.DatabaseMaster;
-import com.velychko.kyrylo.faiflycities.ui.dialogs.ProgressDialogFragment;
+import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.CitiesResponse;
+import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.Country;
+import com.velychko.kyrylo.faiflycities.ui.fragments.ProgressDialogFragment;
 import com.velychko.kyrylo.faiflycities.utils.Constants;
 
 import org.json.JSONArray;
@@ -28,22 +37,56 @@ import java.util.List;
 
 public class CitiesListActivity extends AppCompatActivity {
 
-    CitiesResponse citiesResponse = new CitiesResponse();
+    private CitiesResponse citiesResponse = new CitiesResponse();
 
     ProgressDialogFragment dialog = new ProgressDialogFragment();
 
+    private Button btnChooseCountry;
+    private TextView tvCurrentCountry;
+    private TextView tvCountOfCities;
+    private RecyclerView rvCitiesList;
+
+    private Cursor cursor;
+    private int currentCountryPosition = 0;
+    private int currentCountryCountOfCities = 0;
+    private String currentCountryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cities_list);
+//
+//        SharedPreferences.Editor editor =
+//                getSharedPreferences(Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE).edit();
+//        editor.putBoolean(Constants.SPREF_IS_DATABASE_EMPTY, true);
+//        editor.apply();
+
+
 
         if (isDatabaseEmpty()) {
             ParseCitiesJSONAsyncTask pars = new ParseCitiesJSONAsyncTask();
             pars.execute();
         }
+
+        initViewComponents();
     }
 
+    private void initViewComponents() {
+        btnChooseCountry = (Button) findViewById(R.id.btn_choose_country);
+        btnChooseCountry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cursor == null) {
+                    cursor = DatabaseMaster.getInstance(getApplicationContext())
+                            .getCountriesList();
+                }
+                showChooseCountryDialog();
+            }
+        });
+        tvCurrentCountry = (TextView) findViewById(R.id.tv_current_country);
+        tvCountOfCities = (TextView) findViewById(R.id.tv_count_of_cities);
+        rvCitiesList = (RecyclerView) findViewById(R.id.rv_cities_list);
+    }
 
     private boolean isDatabaseEmpty() {
         SharedPreferences sPref =
@@ -75,7 +118,7 @@ public class CitiesListActivity extends AppCompatActivity {
 
                     boolean fillingDone = DatabaseMaster.getInstance(
                             getApplicationContext()).fillDatabase(citiesResponse);
-                    if (fillingDone) {
+                     if (fillingDone) {
                         SharedPreferences.Editor editor =
                                 getSharedPreferences(Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE).edit();
                         editor.putBoolean(Constants.SPREF_IS_DATABASE_EMPTY, false);
@@ -101,10 +144,14 @@ public class CitiesListActivity extends AppCompatActivity {
                 JSONArray jsonArray = dataJsonObj.getJSONArray(country);
                 if (jsonArray != null) {
                     for (int j = 0; j < jsonArray.length(); j++) {
-                        cities.add(jsonArray.getString(j));
+                        if (!jsonArray.getString(j).equals("")) {
+                            cities.add(jsonArray.getString(j));
+                        }
                     }
                 }
-                citiesResponse.addCountry(new CitiesResponse.Country(country, cities));
+                if (!country.equals("") && cities.size() > 0) {
+                    citiesResponse.addCountry(new Country(country, cities));
+                }
             }
         }
 
@@ -139,6 +186,35 @@ public class CitiesListActivity extends AppCompatActivity {
 
             dialog.dismiss();
         }
+    }
+
+    private void showChooseCountryDialog(){
+        final String CURRENT_COUNTRY_STRING = 
+                getResources().getString(R.string.tv_constant_string_current_country);
+        final String COUNT_OF_CITIES_STRING =
+                getResources().getString(R.string.tv_constant_string_count_of_cities);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_title_choose_country)
+                .setSingleChoiceItems(cursor, currentCountryPosition,
+                        DatabaseDescription.Cities.COLUMN_COUNTRY, null)
+                .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        currentCountryPosition =
+                                ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        cursor.moveToPosition(currentCountryPosition);
+                        currentCountryName = cursor.getString(
+                                cursor.getColumnIndex(DatabaseDescription.Cities.COLUMN_COUNTRY));
+                        tvCurrentCountry.setText(CURRENT_COUNTRY_STRING + " " + currentCountryName);
+                        currentCountryCountOfCities = cursor.getInt(
+                                cursor.getColumnIndex(Constants.SQL_ALIAS_COUNT_OF_CITIES));
+                        tvCountOfCities.setText(COUNT_OF_CITIES_STRING + " "
+                                + currentCountryCountOfCities);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_button_cancel, null)
+                .setCancelable(false)
+                .create().show();
     }
 
 }

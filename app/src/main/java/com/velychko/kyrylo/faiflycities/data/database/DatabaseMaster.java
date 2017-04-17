@@ -1,12 +1,16 @@
 package com.velychko.kyrylo.faiflycities.data.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import static com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription.Cities.COLUMN_CITY;
-import static com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription.Cities.COLUMN_COUNTRY;
-import static com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription.Cities.TABLE_NAME;
+import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.CitiesResponse;
+import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.Country;
+import com.velychko.kyrylo.faiflycities.utils.Constants;
+
+import static android.provider.BaseColumns._ID;
+import static com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription.Cities.*;
 
 public class DatabaseMaster {
 
@@ -30,6 +34,9 @@ public class DatabaseMaster {
 
     public boolean fillDatabase(CitiesResponse response) {
         boolean result = false;
+
+        database.delete(TABLE_NAME, null, null);
+
         String sqlInsert = "INSERT INTO " + TABLE_NAME +
                 "(" + COLUMN_COUNTRY + "," + COLUMN_CITY + ")" +
                 " VALUES(?,?);";
@@ -37,7 +44,7 @@ public class DatabaseMaster {
 
         database.beginTransaction();
         try {
-            for (CitiesResponse.Country country : response.countries) {
+            for (Country country : response.countries) {
                 statement.clearBindings();
                 statement.bindString(1, country.name);
                 for (String city : country.cities) {
@@ -51,5 +58,16 @@ public class DatabaseMaster {
             database.endTransaction();
             return result;
         }
+    }
+
+    public Cursor getCountriesList (){
+        return database.query(TABLE_NAME,
+                new String[]{_ID + ", " + COLUMN_COUNTRY + ", COUNT(" + COLUMN_CITY + ") AS "
+                        + Constants.SQL_ALIAS_COUNT_OF_CITIES},
+                null,
+                null,
+                COLUMN_COUNTRY,
+                null,
+                _ID);
     }
 }

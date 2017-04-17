@@ -6,4 +6,5 @@ public class Constants {
 
     public static final String SPREF_IS_DATABASE_EMPTY = "is_database_empty";
 
+    public static final String SQL_ALIAS_COUNT_OF_CITIES = "count_of_cities";
 }

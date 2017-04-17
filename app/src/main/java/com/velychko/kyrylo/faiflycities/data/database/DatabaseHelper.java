@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static android.provider.BaseColumns._ID;
+import static com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription.Cities.*;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -17,10 +19,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_DICTIONARIES_TABLE =
-                "CREATE TABLE " + DatabaseDescription.Cities.TABLE_NAME + "(" +
-                        DatabaseDescription.Cities._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        DatabaseDescription.Cities.COLUMN_COUNTRY + " TEXT, " +
-                        DatabaseDescription.Cities.COLUMN_CITY + " TEXT);";
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ( " +
+                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_COUNTRY + " TEXT, " +
+                        COLUMN_CITY + " TEXT" +
+                        ");";
         db.execSQL(CREATE_DICTIONARIES_TABLE);
     }
 
