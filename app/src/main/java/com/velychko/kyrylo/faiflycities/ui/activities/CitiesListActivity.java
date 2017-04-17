@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.velychko.kyrylo.faiflycities.R;
+import com.velychko.kyrylo.faiflycities.adapters.CitiesListAdapter;
 import com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription;
 import com.velychko.kyrylo.faiflycities.data.database.DatabaseMaster;
 import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.CitiesResponse;
@@ -46,7 +48,7 @@ public class CitiesListActivity extends AppCompatActivity {
     private TextView tvCountOfCities;
     private RecyclerView rvCitiesList;
 
-    private Cursor cursor;
+    private Cursor cursorCountriesList;
     private int currentCountryPosition = 0;
     private int currentCountryCountOfCities = 0;
     private String currentCountryName;
@@ -76,8 +78,8 @@ public class CitiesListActivity extends AppCompatActivity {
         btnChooseCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cursor == null) {
-                    cursor = DatabaseMaster.getInstance(getApplicationContext())
+                if (cursorCountriesList == null) {
+                    cursorCountriesList = DatabaseMaster.getInstance(getApplicationContext())
                             .getCountriesList();
                 }
                 showChooseCountryDialog();
@@ -86,6 +88,7 @@ public class CitiesListActivity extends AppCompatActivity {
         tvCurrentCountry = (TextView) findViewById(R.id.tv_current_country);
         tvCountOfCities = (TextView) findViewById(R.id.tv_count_of_cities);
         rvCitiesList = (RecyclerView) findViewById(R.id.rv_cities_list);
+        rvCitiesList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
     }
 
     private boolean isDatabaseEmpty() {
@@ -195,21 +198,26 @@ public class CitiesListActivity extends AppCompatActivity {
                 getResources().getString(R.string.tv_constant_string_count_of_cities);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_title_choose_country)
-                .setSingleChoiceItems(cursor, currentCountryPosition,
+                .setSingleChoiceItems(cursorCountriesList, currentCountryPosition,
                         DatabaseDescription.Cities.COLUMN_COUNTRY, null)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         currentCountryPosition =
                                 ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                        cursor.moveToPosition(currentCountryPosition);
-                        currentCountryName = cursor.getString(
-                                cursor.getColumnIndex(DatabaseDescription.Cities.COLUMN_COUNTRY));
+                        cursorCountriesList.moveToPosition(currentCountryPosition);
+                        currentCountryName = cursorCountriesList.getString(
+                                cursorCountriesList.getColumnIndex(DatabaseDescription.Cities.COLUMN_COUNTRY));
                         tvCurrentCountry.setText(CURRENT_COUNTRY_STRING + " " + currentCountryName);
-                        currentCountryCountOfCities = cursor.getInt(
-                                cursor.getColumnIndex(Constants.SQL_ALIAS_COUNT_OF_CITIES));
+                        currentCountryCountOfCities = cursorCountriesList.getInt(
+                                cursorCountriesList.getColumnIndex(Constants.SQL_ALIAS_COUNT_OF_CITIES));
                         tvCountOfCities.setText(COUNT_OF_CITIES_STRING + " "
                                 + currentCountryCountOfCities);
+
+                        Cursor cursorCitiesList = DatabaseMaster.getInstance(getApplicationContext())
+                                .getCitiesListByCountry(currentCountryName);
+                        CitiesListAdapter adapter = new CitiesListAdapter(cursorCitiesList);
+                        rvCitiesList.setAdapter(adapter);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, null)

@@ -70,4 +70,14 @@ public class DatabaseMaster {
                 null,
                 _ID);
     }
+
+    public Cursor getCitiesListByCountry (String countryName){
+        return database.query(TABLE_NAME,
+                new String[]{_ID + ", " + COLUMN_CITY},
+                COLUMN_COUNTRY + "=?",
+                new String[]{countryName},
+                null,
+                null,
+                _ID);
+    }
 }
