@@ -5,8 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.CitiesResponse;
-import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.Country;
+import com.velychko.kyrylo.faiflycities.data.network.countriestocities.CitiesResponse;
+import com.velychko.kyrylo.faiflycities.data.network.countriestocities.Country;
 import com.velychko.kyrylo.faiflycities.utils.Constants;
 
 import static android.provider.BaseColumns._ID;

@@ -19,8 +19,8 @@ import com.velychko.kyrylo.faiflycities.R;
 import com.velychko.kyrylo.faiflycities.adapters.CitiesListAdapter;
 import com.velychko.kyrylo.faiflycities.data.database.DatabaseDescription;
 import com.velychko.kyrylo.faiflycities.data.database.DatabaseMaster;
-import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.CitiesResponse;
-import com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel.Country;
+import com.velychko.kyrylo.faiflycities.data.network.countriestocities.CitiesResponse;
+import com.velychko.kyrylo.faiflycities.data.network.countriestocities.Country;
 import com.velychko.kyrylo.faiflycities.ui.fragments.ProgressDialogFragment;
 import com.velychko.kyrylo.faiflycities.utils.Constants;
 import com.velychko.kyrylo.faiflycities.utils.ItemDivider;
@@ -42,7 +42,7 @@ public class CitiesListActivity extends AppCompatActivity {
 
     private CitiesResponse citiesResponse = new CitiesResponse();
 
-    ProgressDialogFragment dialog = new ProgressDialogFragment();
+    ProgressDialogFragment dialog;
 
     private Button btnChooseCountry;
     private TextView tvCurrentCountry;
@@ -107,6 +107,11 @@ public class CitiesListActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            dialog = new ProgressDialogFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString(Constants.BUNDLE_PROGRESS_DIALOG_TITLE,
+                    getResources().getString(R.string.dialog_title_loading_countries));
+            dialog.setArguments(arguments);
             dialog.show(getSupportFragmentManager(), "progress dialog");
         }
 
@@ -218,7 +223,8 @@ public class CitiesListActivity extends AppCompatActivity {
 
                         Cursor cursorCitiesList = DatabaseMaster.getInstance(getApplicationContext())
                                 .getCitiesListByCountry(currentCountryName);
-                        CitiesListAdapter adapter = new CitiesListAdapter(cursorCitiesList);
+                        CitiesListAdapter adapter =
+                                new CitiesListAdapter(cursorCitiesList, currentCountryName);
                         rvCitiesList.setAdapter(adapter);
                     }
                 })

@@ -1,16 +1,20 @@
 <resources>
-    <string name="app_name">FaiFly Cities</string>
+    <string name="app_name">Faifly Cities</string>
 
     <!--Layout-->
     <string name="btn_choose_country">Choose country</string>
-    <string name="tv_constant_string_current_country">Current country:</string>
+    <string name="tv_constant_string_current_country">Country:</string>
     <string name="tv_constant_string_count_of_cities">Cities:</string>
 
     <!--Dialog-->
     <string name="dialog_title_loading_countries">Loading Countries and Cities</string>
+    <string name="dialog_title_loading_information_about_city">Loading information about the city</string>
     <string name="dialog_title_choose_country">Choose country</string>
     <string name="dialog_constant_string_count_of_cities">Cities: %1$d</string>
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Отмена</string>
+
+    <!--Snackbar-->
+    <string name="snack_check_internet_connection">Check internet connection</string>
 
 </resources>

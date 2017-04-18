@@ -1,4 +1,4 @@
-package com.velychko.kyrylo.faiflycities.data.network.CountriesToCities.DataModel;
+package com.velychko.kyrylo.faiflycities.data.network.countriestocities;
 
 import java.util.ArrayList;
 import java.util.List;

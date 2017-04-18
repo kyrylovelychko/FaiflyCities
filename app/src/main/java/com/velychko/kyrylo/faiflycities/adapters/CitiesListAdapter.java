@@ -19,9 +19,11 @@ public class CitiesListAdapter
         extends RecyclerView.Adapter<CitiesListAdapter.ViewHolder> {
 
     private Cursor cursor;
+    private String countryName;
 
-    public CitiesListAdapter(Cursor cursor) {
+    public CitiesListAdapter(Cursor cursor, String countryName) {
         this.cursor = cursor;
+        this.countryName = countryName;
     }
 
     @Override
@@ -44,10 +46,10 @@ public class CitiesListAdapter
         return cursor.getCount();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView tvCity;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
             tvCity = (TextView) itemView.findViewById(R.id.tv_city_name);
             itemView.setOnClickListener(this);
@@ -57,6 +59,7 @@ public class CitiesListAdapter
         public void onClick(View v) {
             Intent intent = new Intent(v.getContext(), CityDetailsActivity.class);
             intent.putExtra(Constants.EXTRA_CITY_NAME, tvCity.getText().toString());
+            intent.putExtra(Constants.EXTRA_COUNTRY_NAME, countryName);
             v.getContext().startActivity(intent);
         }
     }
