@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.velychko.kyrylo.faiflycities.R;
@@ -48,14 +49,18 @@ public class CitiesListAdapter
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView tvCity;
+        private Button btnCityDetails;
 
         private ViewHolder(View itemView) {
             super(itemView);
             tvCity = (TextView) itemView.findViewById(R.id.tv_city_name);
+            btnCityDetails = (Button) itemView.findViewById(R.id.btn_city_details);
             itemView.setOnClickListener(this);
+            btnCityDetails.setOnClickListener(this);
         }
 
         @Override
+        // По нажатию открываем Activity с детальной информацией о выбранном городе
         public void onClick(View v) {
             Intent intent = new Intent(v.getContext(), CityDetailsActivity.class);
             intent.putExtra(Constants.EXTRA_CITY_NAME, tvCity.getText().toString());

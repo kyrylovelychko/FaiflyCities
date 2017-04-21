@@ -11,4 +11,7 @@ public class Constants {
     public static final String EXTRA_COUNTRY_NAME = "country_name";
 
     public static final String BUNDLE_PROGRESS_DIALOG_TITLE = "progress_dialog_title";
+
+    public static final String CURRENT_COUNTRY_STRING = "Country:";
+    public static final String COUNT_OF_CITIES_STRING = "Cities:";
 }

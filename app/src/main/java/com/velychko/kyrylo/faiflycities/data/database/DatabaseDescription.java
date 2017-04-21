@@ -4,6 +4,7 @@ import android.provider.BaseColumns;
 
 public class DatabaseDescription {
 
+    // Таблица со станами и гордами этих стран
     public static final class Cities implements BaseColumns {
         public static final String TABLE_NAME = "cities";
 

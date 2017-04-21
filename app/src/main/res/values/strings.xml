@@ -3,8 +3,6 @@
 
     <!--Layout-->
     <string name="btn_choose_country">Choose country</string>
-    <string name="tv_constant_string_current_country">Country:</string>
-    <string name="tv_constant_string_count_of_cities">Cities:</string>
 
     <!--Dialog-->
     <string name="dialog_title_loading_countries">Loading Countries and Cities</string>
@@ -16,5 +14,10 @@
 
     <!--Snackbar-->
     <string name="snack_check_internet_connection">Check internet connection</string>
+    <string name="snack_confirm_exit">Close Faifly Cities?</string>
+    <string name="snack_close_app">Close</string>
+
+    <!--Toast-->
+    <string name="toast_city_info_not_available">Information about %1$s is not available</string>
 
 </resources>

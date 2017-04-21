@@ -32,9 +32,11 @@ public class DatabaseMaster {
         return instance;
     }
 
+    // Зполнение БД из распарсенного ответа. Возвращаем успешность заполнения БД
     public boolean fillDatabase(CitiesResponse response) {
         boolean result = false;
 
+        // На всякий случай очищаем БД (чтобы ничего не казалось ;) )
         database.delete(TABLE_NAME, null, null);
 
         String sqlInsert = "INSERT INTO " + TABLE_NAME +
@@ -60,7 +62,8 @@ public class DatabaseMaster {
         }
     }
 
-    public Cursor getCountriesList (){
+    // Получение курсора со списком всех стран и количеством городов в каждой стране
+    public Cursor getCountriesList() {
         return database.query(TABLE_NAME,
                 new String[]{_ID + ", " + COLUMN_COUNTRY + ", COUNT(" + COLUMN_CITY + ") AS "
                         + Constants.SQL_ALIAS_COUNT_OF_CITIES},
@@ -68,16 +71,17 @@ public class DatabaseMaster {
                 null,
                 COLUMN_COUNTRY,
                 null,
-                _ID);
+                COLUMN_COUNTRY);
     }
 
-    public Cursor getCitiesListByCountry (String countryName){
+    // Получение списка городов выбранной страны
+    public Cursor getCitiesListByCountry(String countryName) {
         return database.query(TABLE_NAME,
                 new String[]{_ID + ", " + COLUMN_CITY},
                 COLUMN_COUNTRY + "=?",
                 new String[]{countryName},
                 null,
                 null,
-                _ID);
+                COLUMN_CITY);
     }
 }
